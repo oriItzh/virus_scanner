@@ -21,7 +21,7 @@ class ScannerService:
     def check_cached_scan(db: Session, file_hash: str) -> Optional[FileScan]:
         return db.query(FileScan).filter(FileScan.file_hash == file_hash).first()
 
-    def scan_file(self, db: Session, file_bytes: bytes, filename: str) -> Tuple[str, bool]:
+    def scan_file(self, db: Session, file_bytes: bytes, filename: str, user_id: int) -> Tuple[dict, bool]:
         """
         Scans a file for viruses and manages the scan results in the database.
         
@@ -29,9 +29,10 @@ class ScannerService:
             db: Database session
             file_bytes: The contents of the file to scan
             filename: Name of the file being scanned
+            user_id: ID of the user performing the scan
             
         Returns:
-            Tuple[str, bool]: (result message, is_cached)
+            Tuple[dict, bool]: (result dict with message and color, is_cached)
         """
         if not file_bytes:
             raise ValueError("Empty file uploaded.")
@@ -40,7 +41,11 @@ class ScannerService:
         cached_scan = self.check_cached_scan(db, file_hash)
 
         if cached_scan:
-            result = f"File has already been scanned. {'Virus detected!!' if cached_scan.scan_result else 'File is clean!!'}"
+            is_virus = cached_scan.scan_result
+            result = {
+                'message': f"File has already been scanned. {'Virus detected!!' if is_virus else 'File is clean!!'}",
+                'color': 'red' if is_virus else 'green'
+            }
             return result, True
 
         is_virus = self.scan_for_virus(file_bytes)
@@ -48,12 +53,16 @@ class ScannerService:
             file_hash=file_hash,
             scan_result=is_virus,
             filename=filename,
-            scan_timestamp=datetime.now()
+            scan_timestamp=datetime.now(),
+            user_id=user_id
         )
         db.add(new_scan)
         db.commit()
 
-        result = "Virus detected" if is_virus else "File is clean"
+        result = {
+            'message': "Virus detected!!" if is_virus else "File is clean!!",
+            'color': 'red' if is_virus else 'green'
+        }
         return result, False
 
     @staticmethod

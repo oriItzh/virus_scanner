@@ -7,3 +7,6 @@ psycopg2-binary
 python-dotenv
 pytest
 pytest-asyncio
+itsdangerous
+passlib[bcrypt]
+alembic

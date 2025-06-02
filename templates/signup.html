@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up</title>
+    <style>
+      body { font-family: Arial; background: #f8f9fa; }
+      .container { max-width: 350px; margin: 3em auto; padding: 2em; background: #fff; border-radius: 8px; box-shadow: 0 2px 12px #ddd; }
+      .error { color: red; font-size: 0.95em; margin-bottom: 0.7em; }
+      input { margin: 0.5em 0; width: 100%; padding: 0.5em; }
+      button { width: 100%; }
+      a { display: block; text-align: right; margin-top: 1em; font-size: 0.95em;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Sign Up</h2>
+    {% for error in errors %}
+      <div class="error">{{ error }}</div>
+    {% endfor %}
+    <form method="post">
+        <input name="first_name" placeholder="First Name" required value="{{ form_data.first_name or '' }}">
+        <input name="last_name" placeholder="Last Name" required value="{{ form_data.last_name or '' }}">
+        <input name="username" placeholder="Username" required value="{{ form_data.username or '' }}">
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+    <a href="/login">Already have an account?</a>
+</div>
+</body>
+</html>

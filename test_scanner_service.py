@@ -46,8 +46,9 @@ def test_scan_file_cached(scanner_service, mock_db):
     result, is_cached = scanner_service.scan_file(mock_db, b"test content", "test.txt")
     
     assert is_cached
-    assert "already been scanned" in result
-    assert "Virus detected" in result
+    assert "already been scanned" in result['message']
+    assert "Virus detected" in result['message']
+    assert result['color'] == 'red'
     mock_db.add.assert_not_called()
     mock_db.commit.assert_not_called()
 
@@ -58,7 +59,8 @@ def test_scan_file_new(scanner_service, mock_db):
     result, is_cached = scanner_service.scan_file(mock_db, b"clean content", "test.txt")
     
     assert not is_cached
-    assert "File is clean" in result
+    assert "File is clean" in result['message']
+    assert result['color'] == 'green'
     mock_db.add.assert_called_once()
     mock_db.commit.assert_called_once()
 

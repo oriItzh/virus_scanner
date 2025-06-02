@@ -7,6 +7,9 @@
         body { font-family: Arial, sans-serif; margin: 2em; background: #fafbff; }
         .container { background: #fff; padding: 2em; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 2px 12px #eee;}
         .result { margin-top: 1em; font-weight: bold; }
+        .result-text { color: inherit; }
+        .result-text.red { color: #dc3545; }
+        .result-text.green { color: #28a745; }
     </style>
 </head>
 <body>
@@ -19,7 +22,7 @@
     {% if result %}
         <div class="result">
             <p>File: <strong>{{ filename }}</strong></p>
-            <p>Scan Result: <strong>{{ result }}</strong></p>
+            <p>Scan Result: <strong class="result-text {{ result_color }}">{{ result }}</strong></p>
         </div>
     {% endif %}
 </div>
