@@ -65,21 +65,36 @@ def get_current_user(request: Request):
     return request.session.get("user")
 
 @app.get("/", response_class=HTMLResponse)
-def home(request: Request):
-    if not get_current_user(request):
+def root():
+    # Always redirect root to login page, regardless of auth state
+    return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
+
+@app.get("/scan-files", response_class=HTMLResponse)
+def scan_files_page(request: Request):
+    user = get_current_user(request)
+    if not user:
         return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
-    return templates.TemplateResponse("upload.html", {"request": request, "result": None, "user": get_current_user(request)})
+    return templates.TemplateResponse(
+        "upload.html",
+        {
+            "request": request,
+            "result": None,
+            "user": user,
+            "username": user["username"],
+        }
+    )
 
 @app.post("/scan", response_class=HTMLResponse)
 async def scan_file(request: Request, file: UploadFile = File(...)):
-    if not get_current_user(request):
+    user = get_current_user(request)
+    if not user:
         return RedirectResponse("/login", status_code=status.HTTP_302_FOUND)
     db = SessionLocal()
     filename = file.filename
     try:
         file_bytes = await file.read()
         result, is_cached = scanner_service.scan_file(
-            db, file_bytes, filename, user_id=get_current_user(request)["user_id"]
+            db, file_bytes, filename, user_id=user["user_id"]
         )
         if is_cached:
             logging.info(f"Cache HIT: {filename}")
@@ -92,7 +107,8 @@ async def scan_file(request: Request, file: UploadFile = File(...)):
                 "result": result['message'],
                 "result_color": result['color'],
                 "filename": filename,
-                "user": get_current_user(request)
+                "user": user,
+                "username": user["username"],
             },
         )
     except Exception as e:
@@ -104,7 +120,8 @@ async def scan_file(request: Request, file: UploadFile = File(...)):
                 "result": f"Error: {str(e)}",
                 "result_color": "red",
                 "filename": filename,
-                "user": get_current_user(request)
+                "user": user,
+                "username": user["username"],
             },
         )
     finally:
@@ -183,7 +200,7 @@ def login(request: Request, username: str = Form(...), password: str = Form(...)
         "first_name": user.first_name
     }
     db.close()
-    return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
+    return RedirectResponse("/scan-files", status_code=status.HTTP_302_FOUND)
 
 @app.get("/logout")
 def logout(request: Request):
