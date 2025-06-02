@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>File Virus Scanner</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; background: #fafbff; }
+        .container { background: #fff; padding: 2em; border-radius: 10px; max-width: 400px; margin: auto; box-shadow: 0 2px 12px #eee;}
+        .result { margin-top: 1em; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Upload a File to Scan</h2>
+    <form action="/scan" enctype="multipart/form-data" method="post">
+        <input type="file" name="file" required><br><br>
+        <button type="submit">Scan File</button>
+    </form>
+    {% if result %}
+        <div class="result">
+            <p>File: <strong>{{ filename }}</strong></p>
+            <p>Scan Result: <strong>{{ result }}</strong></p>
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>
