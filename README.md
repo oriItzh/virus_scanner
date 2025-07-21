@@ -61,13 +61,4 @@ Main dependencies (see `requirements.txt`):
 - alembic
 - pytest, pytest-asyncio (for testing)
 
-## File Upload UI Example
-The main upload interface (`templates/upload.html`) provides a simple form for file selection and displays scan results with color-coded feedback.
-
-## Notes
-- The actual virus scanning logic is expected in `scanner_service.py` (not found in this scan).
-- Database models are expected in `models.py` (not found in this scan).
-- Make sure to update the `SECRET_KEY` in production.
-- For production, use a secure PostgreSQL setup and consider HTTPS.
-
 ---
