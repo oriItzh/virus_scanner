@@ -28,34 +28,18 @@ A web-based file virus scanner built with FastAPI, SQLAlchemy, and Jinja2. Users
 - PostgreSQL (default config: user `postgres`, password `postgres`)
 - Docker & Docker Compose (optional, for containerized deployment)
 
-## Installation & Setup
+## Installation & Setup Using Docker
 1. **Clone the repository**
    ```sh
-   git clone <repo-url>
+   git clone https://github.com/oriItzh/virus_scanner.git
    cd virus_scanner
    ```
-2. **Install dependencies**
-   ```sh
-   pip install -r requirements.txt
-   ```
-3. **Set environment variables** (optional)
-   - `DATABASE_URL`: PostgreSQL connection string (default is for Docker Compose)
-   - `SECRET_KEY`: Secret for session management
-4. **Run database migrations** (if using Alembic)
-   ```sh
-   alembic upgrade head
-   ```
-5. **Start the app**
-   ```sh
-   uvicorn main:app --reload
-   ```
-
-## Using Docker
-1. **Build and start all services**
+   
+2. **Build and start all services**
    ```sh
    docker-compose up --build
    ```
-2. The app will be available at [http://localhost:8000](http://localhost:8000)
+3. The app will be available at [http://localhost:8000](http://localhost:8000)
 
 ## Usage
 - Visit `/signup` to create a new account.
